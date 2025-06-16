@@ -65,4 +65,4 @@ jobs:
 
     - name: Push Docker Image
       if: github.ref == 'refs/heads/main'
-      run: docker push ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}
+      run: docker push ${{ env.DOCKER_IMAGE }}
