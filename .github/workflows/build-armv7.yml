@@ -22,23 +22,23 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build Cross-Compiler Toolchain
-      runs: docker build -t ${{ env.DOCKER_IMAGE }} ./armv7/
+      run: docker build -t ${{ env.DOCKER_IMAGE }} ./armv7/
 
     - name: Generate Cross-Compiler Helper Script
-      runs: |
+      run: |
         docker run --rm ${{ env.DOCKER_IMAGE }} > cross
         chmod +x cross
       working-directory: ${{ github.workspace }}
     
     - name: Configure and Build Example
-      runs: |
+      run: |
         mkdir -p example/build 
         ./cross cmake -S ./example -B ./example/build
         ./cross cmake --build ./example/build
       working-directory: ${{ github.workspace }}
     
     - name: Setup QEMU
-      runs: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     
     - name: Create Independent Test Environment
       id: test_env
