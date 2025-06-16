@@ -57,8 +57,7 @@ execute_command() {
     exec "$@"
 }
 
-# Main logic flow of entrypoint.sh
-# This script decides whether to:
+# Main logic flow of entrypoint.sh. This script decides whether to:
 # 1. Generate the helper script, when running without arguments from host
 # 2. Execute a command inside the container, running via helper script
 # 3. Show the internal help.

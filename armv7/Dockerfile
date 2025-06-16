@@ -51,20 +51,12 @@ ENV CC=arm-linux-gnueabihf-gcc \
 # will default to cross-compiling for ARMv7.
 
 # Copy and Configure CMake Toolchain File
-# This step brings in a pre-defined CMake toolchain file from your host machine.
-# This file explicitly tells CMake how to find and use the ARMv7 cross-compiler
-# and its associated libraries/headers.
 COPY armv7-toolchain.cmake /opt/armv7-toolchain.cmake
-# 'COPY armv7-toolchain.cmake /opt/armv7-toolchain.cmake': Copies the CMake toolchain file
-# from the build context (where your Dockerfile is located) into the container
-# at '/opt/armv7-toolchain.cmake'.
 
-# Set CMAKE_TOOLCHAIN_FILE environment variable for CMake to pick it up by default
+# Set CMAKE_TOOLCHAIN_FILE
 ENV CMAKE_TOOLCHAIN_FILE=/opt/armv7-toolchain.cmake
 # This environment variable instructs CMake to automatically load the specified
 # toolchain file ('/opt/armv7-toolchain.cmake') for all build configurations.
-# This makes CMake automatically use the ARMv7 cross-compiler without needing to
-# specify '-DCMAKE_TOOLCHAIN_FILE' on the command line.
 
 # This is your custom entrypoint script that acts as the "smart" wrapper
 # for the Docker image (like 'dockcross'). It handles generating the host helper script

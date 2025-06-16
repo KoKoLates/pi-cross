@@ -20,6 +20,6 @@ endif()
 set(CMAKE_FIND_ROOT_PATH "/usr/arm-linux-gnueabihf")
 
 # Configure how CMake searches for programs, libraries, and includes
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)    # Don not look for programs in sysroot
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)     # Only look for libraries in sysroot
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)     # Only look for includes in sysroot
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
