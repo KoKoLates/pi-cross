@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e 
 
-IMAGE_NAME="pi-cross:armv7"
+IMAGE_NAME="kokolates/pi-cross:armv7"
 CONTAINER_WORK_DIR="/work"
 
 generate_script() {

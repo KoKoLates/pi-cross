@@ -5,6 +5,7 @@ on:
     paths:
       - 'armv7/**'
       - 'armv7/Dockerfile'
+      - 'github/workflows/build-armv7.yml'
     branches:
       - main
 
@@ -13,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_IMAGE: pi-cross:armv7
+      DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/pi-cross:armv7
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCEKR_PASSWORD: ${{ secrets.DOCEKR_PASSWORD }}
 
