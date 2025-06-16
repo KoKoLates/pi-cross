@@ -5,7 +5,7 @@ on:
     paths:
       - 'armv7/**'
       - 'armv7/Dockerfile'
-      - 'github/workflows/build-armv7.yml'
+      - '.github/workflows/**'
     branches:
       - main
 
