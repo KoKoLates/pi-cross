@@ -1,0 +1,68 @@
+name: build-aarch64
+
+on:
+  push:
+    paths:
+      - 'aarch64/**'
+      - 'aarch64/Dockerfile'
+      - '.github/workflows/**'
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/pi-cross:aarch64
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Build Cross-Compiler Toolchain
+      run: docker build -t ${{ env.DOCKER_IMAGE }} ./aarch64/
+
+    - name: Generate Cross-Compiler Helper Script
+      run: |
+        docker run --rm ${{ env.DOCKER_IMAGE }} > cross
+        chmod +x cross
+      working-directory: ${{ github.workspace }}
+    
+    - name: Configure and Build Example
+      run: |
+        mkdir -p example/build 
+        ./cross cmake -S ./example -B ./example/build
+        ./cross cmake --build ./example/build
+      working-directory: ${{ github.workspace }}
+    
+    - name: Setup QEMU
+      run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    
+    - name: Create Independent Test Environment
+      id: test_env
+      run: |
+        docker run -d --name test-env --platform linux/arm64/v8 arm64v8/debian sleep infinity # Updated platform and base image
+        docker cp ${{ github.workspace }}/example/build/main test-env:/usr/local/bin/main 
+
+    - name: Execute Binary in Independent Environment
+      run: docker exec test-env /usr/local/bin/main
+
+    - name: Cleanup Test Environment
+      if: always() && steps.test_env.outcome != 'skipped'
+      run: |
+        docker stop test-env
+        docker rm test-env
+    
+    - name: Login to DockerHub
+      if: github.ref == 'refs/heads/main'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push Docker Image
+      if: github.ref == 'refs/heads/main'
+      run: docker push ${{ env.DOCKER_IMAGE }}
