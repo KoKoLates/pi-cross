@@ -5,7 +5,10 @@ on:
     paths:
       - 'aarch64/**'
       - 'aarch64/Dockerfile'
-      - '.github/workflows/**'
+      - '.github/workflows/build-aarch64.yml'
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 

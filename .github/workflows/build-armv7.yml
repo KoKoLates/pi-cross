@@ -5,7 +5,10 @@ on:
     paths:
       - 'armv7/**'
       - 'armv7/Dockerfile'
-      - '.github/workflows/**'
+      - '.github/workflows/build-armv7.yml'
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
