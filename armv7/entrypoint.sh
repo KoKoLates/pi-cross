@@ -47,8 +47,17 @@ elif [[ "\$#" -eq 0 ]]; then
     exit 1
 fi
 
+INTERACTIVE_FLAGS=""
+case "\$1" in
+    bash|sh|zsh|/bin/bash|/bin/sh|/bin/zsh)
+        INTERACTIVE_FLAGS="-it"
+        ;;
+    *)
+        ;;
+esac
+
 # Execute the core Docker command with image's entrypoint
-docker run --rm -v \$(pwd):$CONTAINER_WORK_DIR -w $CONTAINER_WORK_DIR $IMAGE_NAME \$@
+docker run --rm \$INTERACTIVE_FLAGS -v \$(pwd):$CONTAINER_WORK_DIR -w $CONTAINER_WORK_DIR $IMAGE_NAME "\$@"
 EOF
 }
 
