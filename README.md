@@ -1,79 +1,90 @@
 # Raspberry Pi Cross-Compilation
-This repository provides Docker images specifically designed for Raspberry Pi cross-compilation. They bundle essential tools like `build-essential`, `cmake`, `git`, and the necessary GNU cross-toolchains. A key feature of this setup is the provided `cross` helper script, which simplifies the process of executing commands within the Docker container, mirroring the functionality of [`dockcross`](https://github.com/dockcross/dockcross).
+This repository offers a set of powerful Docker images designed for seamless Raspberry Pi cross-compilation. These images (`kokolates/pi-cross:armv7` and `kokolates/pi-cross:aarch64`) come pre-loaded with essential development tools, including build-essential, cmake, git, and the necessary GNU cross-toolchains. A core feature of this setup is the `cross` script. This intuitive wrapper simplifies executing commands within the Docker container, providing a user experience similar to popular tools like [`dockcross`](https://github.com/dockcross/dockcross).
 
 
 ## Features
-- **Lightweight Base**: Built on `debian:stable-slim` for a minimal footprint.
-- **Complete Toolchains**: Includes `gcc`, `g++`, and `libc6` for both `ARMv7 (armhf)` and `ARMv8 (aarch64)` targets.
-- **Pre-configured CMake**: `CMAKE_TOOLCHAIN_FILE` is automatically set to `/opt/<arch>-toolchain.cmake`, making CMake projects out-of-the-box ready for cross-compilation.
+- **Lightweight Base**: Built on `debian:stable-slim` to ensure a minimal footprint.
+- **Complete Toolchains**: Includes `gcc`, `g++`, and `libc6` for both `ARMv7 (armhf)` and `ARMv8 (aarch64)` architectures, covering a wide range of Raspberry Pi models.
+- **Pre-configured CMake**: The `CMAKE_TOOLCHAIN_FILE` is automatically set, making your cmake projects ready for cross-compilation with minimal setup.
 
 ## Raspberry Pi & Compiler Compatibility
-Choosing the correct compiler (and thus Docker image) depends on your specific Raspberry Pi model and the operating system you're targeting.
+Choosing the right Docker image depends on your target Raspberry Pi model and the operating system you're running on it. Refer to the table below to determine which compiler image best suits your needs
 
 | Raspberry Pi Model(s)| Recommended OS | Architecture | Images |
 | -- | -- | -- | -- |
-| Raspberry Pi 2B, 3B, 3B+ | Raspberry Pi OS Lite (32-bit) | ARMv7 | `kokolates/pi-cross:armv7` |
-| Raspberry Pi 3B, 3B+, 4B | Raspberry Pi OS Lite (64-bit) / Ubuntu | ARMv8 | `kokolates/pi-cross:aarch64` |
+| 2B, 3B, 3B+ | RPi OS Lite (32-bit) | ARMv7 | `kokolates/pi-cross:armv7` |
+| 3B, 3B+, 4B | RPi OS Lite (64-bit) / Ubuntu | ARMv8 | `kokolates/pi-cross:aarch64` |
 
 ## Getting Started
-Take `armv7` image as example. There are pre-built image on DockerHub, user could pull corresponding image appropriate for their target architecture directly
+Let's use the `armv7` image as an example. The process is identical for `aarch64`. The quickest way is to pull the pre-built image directly from DockerHub. Choose the image appropriate for your target architecture:
 
 ```bash
 docker pull kokolates/pi-cross:armv7
 ```
 
-If preferring to build image locally or want to modify `Dockerfile`, `toolchain.cmake`, or `entrypoint.sh`, then you can pull the repository from Github and build locally:
+If you prefer to build the image from source or want to customize the `Dockerfile`, `toolchain.cmake`, or `entrypoint.sh`, start by cloning the repository:
 
 ```bash
 git clone https://github.com/KoKoLates/pi-cross.git
 cd pi-cross
-
-# Build the image with Dockerfile
-docker build -t kokolates/pi-cross:armv7 armv7
 ```
-Once you have the Docker image, generate the `cross` script in your current directory. Make sure to use the specific image you intend to use for cross-compilation.
+
+Then, navigate into the appropriate architecture directory (`armv7` or `aarch64`) and build the image:
+
+```bash
+docker build -t kokolates/pi-cross:armv7 armv7/
+```
+
+Once you have the Docker image, you can generate the `cross` script in your current directory. Ensure you use the specific Docker image you intend to use for cross-compilation.
 
 ```bash
 docker run --rm kokolates/pi-cross:armv7 > cross
+```
 
-# Make the script executable
+Next, make the script executable:
+
+```
 chmod +x cross
 ```
-Now you have a `cross` script that you can use to run commands within the chosen cross-compilation environment.
+
+You now have a `cross` script ready to execute commands within your chosen cross-compilation environment. If you need to switch between `armv7` and `aarch64`, simply re-generate the cross script using the other image or use different file name for different script.
 
 ## Usage
-The `cross` script acts as a convenient wrapper for your Docker container, automatically mounting your current host project directory into `/work` inside the container and setting it as the working directory. You can verify that the correct cross-compilers and toolchain file are set by running:
+
+The `cross` script acts as a seamless wrapper. It automatically mounts your current host project directory into `/work` inside the container and sets it as the working directory, making your local files accessible. Before you start, it's a good idea to confirm that the correct cross-compilers and toolchain file are set:
 
 ```bash
 ./cross printenv CC CXX CMAKE_TOOLCHAIN_FILE
 ```
 
-If the cross-compiler `arm-linux-gnueabihf-gcc`, `arm-linux-gnueabihf-g++` show up correctly, then you could use the `cross` script to configure and build as normal as what you use `cmake` and `make`. In my repository, there are an example of c++ program with corresponding cmake configuration, which the program just show some system and architecture informations. To configure a project where your `CMakeLists.txt` is in the `example` directory and you want to build in `example/build/`
+If the output correctly displays compilers like `arm-linux-gnueabihf-gcc`, `arm-linux-gnueabihf-g++`, and the appropriate `CMAKE_TOOLCHAIN_FILE`, you're all set!
+
+You can now use the `cross` script to configure and build your projects just as you would with native `cmake` and `make`. This repository includes an `example/` C++ program with its cmake configuration, which displays system and architecture information. To configure a project where your `CMakeLists.txt` is in the `example/` directory and you want to create a `build/` directory:
 
 ```bash
 ./cross cmake -S example -B example/build/
 ```
 
-To build the configured CMake project
+To build the configured cmake project
 
 ```bash
 ./cross cmake --build example/build/
 ```
 
-If your project uses Make directly (e.g., after cmake generation or for a non-cmake project)
+If your project uses make directly (e.g., after cmake generation or for a non-cmake project)
 
 ```bash
 ./cross make -C build
 ```
 
-To drop into a bash shell inside the container for debugging or manual operations. Any command you pass to `cross` will be executed within the selected cross-compilation environment inside the Docker container
+You can drop into a bash shell inside the container for debugging or manual operations with `bash` command to start a interactive mode, or pass command with options to `cross` which will be executed within the selected cross-compilation environment inside the Docker container 
 
 ```bash
-./cross bash                      # enter interative bash
-./cross bash -c "touch test.cpp"  # create a new file
+./cross bash                      # Enter interative shell
+./cross bash -c "touch test.cpp"  # Create a new file
 ```
 
-For a quick reference on the `cross` script's usage
+For a quick reference on the `cross` script's usage, including available options:
 
 ```bash
 ./cross --help
