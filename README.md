@@ -77,6 +77,13 @@ If your project uses make directly (e.g., after cmake generation or for a non-cm
 ./cross make -C build
 ```
 
+## Advanced Usage and Help
+The `cross` script offers more than just basic compilation. You can use it for interactive sessions, custom commands, and quick reference. For a quick reference on the `cross` script's usage, including available options:
+
+```bash
+./cross --help
+```
+
 You can drop into a bash shell inside the container for debugging or manual operations with `bash` command to start a interactive mode, or pass command with options to `cross` which will be executed within the selected cross-compilation environment inside the Docker container 
 
 ```bash
@@ -84,8 +91,4 @@ You can drop into a bash shell inside the container for debugging or manual oper
 ./cross bash -c "touch test.cpp"  # Create a new file
 ```
 
-For a quick reference on the `cross` script's usage, including available options:
 
-```bash
-./cross --help
-```
