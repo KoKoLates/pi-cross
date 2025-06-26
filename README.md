@@ -4,11 +4,11 @@ This repository offers a set of Docker images designed for Raspberry Pi cross-co
 ## Raspberry Pi & Compiler Compatibility
 Choosing the right Docker image depends on your target Raspberry Pi model and the operating system you're running on it. Refer to the table below to determine which compiler image best suits your needs
 
-| Raspberry Pi Model(s)| Recommended OS | Architecture | Images |
+| Model(s)| Recommended OS | Architecture | Images |
 | -- | -- | -- | -- |
-| **2B (v1.2)** | Raspberry Pi OS Lite (32-bit) | ARMv7 | `kokolates/pi-cross:armv7` |
-| **3B, 3B+** | Raspberry Pi OS Lite (32-bit / 64-bit) / <br> Ubuntu | ARMv7 / ARMv8 | `kokolates/pi-cross:armv7` 32-bit <br> `kokolates/pi-cross:aarch64` 64-bit |
-| **4B, 400, CM4** | Raspberry Pi OS Lite (64-bit) / Ubuntu | ARMv8 | `kokolates/pi-cross:aarch64` |
+| **2B (v1.2)** | RPi OS Lite (32-bit) | ARMv7 | `kokolates/pi-cross:armv7` |
+| **3B, 3B+** | RPi OS Lite (32-bit / 64-bit) / <br> Ubuntu | ARMv7 / ARMv8 | `kokolates/pi-cross:armv7` 32-bit <br> `kokolates/pi-cross:aarch64` 64-bit |
+| **4B, 400, CM4** | RPi OS Lite (64-bit) / Ubuntu | ARMv8 | `kokolates/pi-cross:aarch64` |
 
 ## Getting Started
 Let's use the `armv7` image as an example. The process is identical for `aarch64`. The quickest way is to pull the pre-built image directly from [DockerHub](https://hub.docker.com/r/kokolates/pi-cross). Choose the image appropriate for your target architecture:
